@@ -147,7 +147,140 @@ def verify_password(entered: str, salt: str, expected_hash: str) -> bool:
     return hash_password(entered, salt) == expected_hash
 
 # ==============================================================================
-# 4. Menu Icons (Deferred to UI Phase)
+# 4. Real 16x16 RGBA Menu Icons Generator (Pillow + ImageTk)
+# ==============================================================================
+def create_menu_icons() -> dict:
+    """
+    Generates clean, professional 16x16 RGBA icons for every menu item,
+    providing native Win32 clarity with zero distorted unicode characters.
+    """
+    icons = {}
+
+    def new_canvas():
+        im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        return im, d
+
+    # 1. lock (Padlock)
+    im, d = new_canvas()
+    d.arc([5, 2, 10, 8], 180, 0, fill=(127, 140, 141, 255), width=2)
+    d.rectangle([3, 7, 12, 14], fill=(241, 196, 15, 255), outline=(214, 137, 16, 255))
+    d.rectangle([7, 9, 8, 12], fill=(44, 62, 80, 255))
+    icons["lock"] = ImageTk.PhotoImage(im)
+
+    # 2. key (Golden Key)
+    im, d = new_canvas()
+    d.ellipse([2, 2, 7, 7], outline=(243, 156, 18, 255), width=2)
+    d.line([(6, 6), (13, 13)], fill=(243, 156, 18, 255), width=2)
+    d.line([(10, 10), (12, 8)], fill=(243, 156, 18, 255), width=2)
+    d.line([(12, 12), (14, 10)], fill=(243, 156, 18, 255), width=2)
+    icons["key"] = ImageTk.PhotoImage(im)
+
+    # 3. refresh (Circular Arrows)
+    im, d = new_canvas()
+    d.arc([2, 2, 13, 13], 30, 300, fill=(41, 128, 185, 255), width=2)
+    d.polygon([(11, 2), (15, 5), (10, 7)], fill=(41, 128, 185, 255))
+    icons["refresh"] = ImageTk.PhotoImage(im)
+
+    # 4. exit (Door / Exit Arrow)
+    im, d = new_canvas()
+    d.rectangle([2, 2, 7, 13], fill=(127, 140, 141, 255), outline=(44, 62, 80, 255))
+    d.line([(7, 8), (14, 8)], fill=(231, 76, 60, 255), width=2)
+    d.polygon([(11, 5), (15, 8), (11, 11)], fill=(231, 76, 60, 255))
+    icons["exit"] = ImageTk.PhotoImage(im)
+
+    # 5. allow_all (Green Check Circle)
+    im, d = new_canvas()
+    d.ellipse([2, 2, 13, 13], fill=(39, 174, 96, 255))
+    d.line([(4, 8), (7, 11), (12, 5)], fill=(255, 255, 255, 255), width=2)
+    icons["allow_all"] = ImageTk.PhotoImage(im)
+
+    # 6. block_all (Red Prohibition Circle)
+    im, d = new_canvas()
+    d.ellipse([2, 2, 13, 13], outline=(192, 57, 43, 255), width=2)
+    d.line([(4, 4), (11, 11)], fill=(192, 57, 43, 255), width=2)
+    icons["block_all"] = ImageTk.PhotoImage(im)
+
+    # 7. cd (Compact Disc)
+    im, d = new_canvas()
+    d.ellipse([2, 2, 13, 13], fill=(189, 195, 199, 255), outline=(127, 140, 141, 255))
+    d.ellipse([5, 5, 10, 10], fill=(72, 219, 251, 255))
+    d.ellipse([6, 6, 9, 9], fill=(240, 240, 240, 255), outline=(127, 140, 141, 255))
+    icons["cd"] = ImageTk.PhotoImage(im)
+
+    # 8. floppy (Diskette)
+    im, d = new_canvas()
+    d.rectangle([2, 2, 13, 13], fill=(41, 128, 185, 255), outline=(27, 79, 114, 255))
+    d.rectangle([4, 2, 11, 6], fill=(189, 195, 199, 255))
+    d.rectangle([4, 8, 11, 12], fill=(236, 240, 241, 255))
+    icons["floppy"] = ImageTk.PhotoImage(im)
+
+    # 9. tape (Cassette Tape)
+    im, d = new_canvas()
+    d.rectangle([2, 4, 13, 12], fill=(52, 73, 94, 255), outline=(44, 62, 80, 255))
+    d.ellipse([4, 6, 7, 9], fill=(236, 240, 241, 255))
+    d.ellipse([8, 6, 11, 9], fill=(236, 240, 241, 255))
+    icons["tape"] = ImageTk.PhotoImage(im)
+
+    # 10. phone (Mobile / MTP Device)
+    im, d = new_canvas()
+    d.rectangle([4, 2, 11, 14], fill=(22, 160, 133, 255), outline=(17, 120, 100, 255))
+    d.rectangle([5, 4, 10, 11], fill=(44, 62, 80, 255))
+    d.ellipse([7, 12, 8, 13], fill=(255, 255, 255, 255))
+    icons["phone"] = ImageTk.PhotoImage(im)
+
+    # 11. stop_install (Stop Sign)
+    im, d = new_canvas()
+    d.polygon([(5, 2), (10, 2), (13, 5), (13, 10), (10, 13), (5, 13), (2, 10), (2, 5)], fill=(192, 57, 43, 255))
+    d.rectangle([4, 7, 11, 8], fill=(255, 255, 255, 255))
+    icons["stop_install"] = ImageTk.PhotoImage(im)
+
+    # 12. protect_files (Shield with Lock)
+    im, d = new_canvas()
+    d.polygon([(8, 1), (13, 3), (13, 9), (8, 14), (3, 9), (3, 3)], fill=(41, 128, 185, 255), outline=(21, 67, 96, 255))
+    d.rectangle([6, 7, 9, 10], fill=(241, 196, 15, 255))
+    d.arc([6, 5, 9, 8], 180, 0, fill=(255, 255, 255, 255), width=1)
+    icons["protect_files"] = ImageTk.PhotoImage(im)
+
+    # 13. autorun (Lightning Bolt)
+    im, d = new_canvas()
+    d.polygon([(9, 1), (4, 8), (8, 8), (6, 14), (13, 7), (9, 7)], fill=(243, 156, 18, 255))
+    icons["autorun"] = ImageTk.PhotoImage(im)
+
+    # 14. hidden_files (Eye Reveal Icon)
+    im, d = new_canvas()
+    d.ellipse([2, 4, 13, 11], outline=(41, 128, 185, 255), width=2)
+    d.ellipse([6, 6, 9, 9], fill=(41, 128, 185, 255))
+    icons["hidden_files"] = ImageTk.PhotoImage(im)
+
+    # 15. file_ext (File Extension Tag)
+    im, d = new_canvas()
+    d.polygon([(3, 2), (10, 2), (13, 5), (13, 14), (3, 14)], fill=(236, 240, 241, 255), outline=(142, 68, 173, 255))
+    d.rectangle([5, 8, 11, 11], fill=(142, 68, 173, 255))
+    icons["file_ext"] = ImageTk.PhotoImage(im)
+
+    # 16. eject (Hardware Eject Icon)
+    im, d = new_canvas()
+    d.polygon([(8, 2), (3, 9), (13, 9)], fill=(211, 84, 0, 255))
+    d.rectangle([3, 11, 13, 13], fill=(211, 84, 0, 255))
+    icons["eject"] = ImageTk.PhotoImage(im)
+
+    # 17. info (Info Circle)
+    im, d = new_canvas()
+    d.ellipse([2, 2, 13, 13], fill=(41, 128, 185, 255))
+    d.rectangle([7, 4, 8, 5], fill=(255, 255, 255, 255))
+    d.rectangle([7, 7, 8, 11], fill=(255, 255, 255, 255))
+    icons["info"] = ImageTk.PhotoImage(im)
+
+    # 18. about (Security Shield Check)
+    im, d = new_canvas()
+    d.polygon([(8, 1), (13, 3), (13, 9), (8, 14), (3, 9), (3, 3)], fill=(31, 79, 114, 255), outline=(241, 196, 15, 255))
+    d.line([(5, 7), (7, 10), (11, 5)], fill=(255, 255, 255, 255), width=2)
+    icons["about"] = ImageTk.PhotoImage(im)
+
+    return icons
+
+# ==============================================================================
 # 5. Low-Level Registry Helper Functions
 # ==============================================================================
 def get_reg_dword(root_key, subkey: str, value_name: str, default: int = None):
@@ -958,7 +1091,7 @@ class USBSentryApp:
         self.setup_styles()
 
         # Generate & Persist Real 16x16 Menu Icons
-        self._menu_icons = {}
+        self._menu_icons = create_menu_icons()
 
         # Build Main Interface Elements
         self.setup_menu()
@@ -1164,7 +1297,7 @@ class USBSentryApp:
                                        command=lambda: set_class_guid_policy(GUID_CD_DVD, 2))
         self.sub_cddvd.add_radiobutton(label="Aygıtı Engelle", variable=self.var_cddvd, value=3,
                                        command=lambda: set_class_guid_policy(GUID_CD_DVD, 3))
-        self.menu_options.add_cascade(label="CD-DVD Aygıtları", menu=self.sub_cddvd)
+        self.menu_options.add_cascade(label="CD-DVD Aygıtları", image=self._menu_icons["cd"], compound="left", menu=self.sub_cddvd)
 
         # Cascade: Floppy Aygıtları
         self.sub_floppy = tk.Menu(self.menu_options, tearoff=0)
@@ -1174,7 +1307,7 @@ class USBSentryApp:
                                         command=lambda: set_class_guid_policy(GUID_FLOPPY, 2))
         self.sub_floppy.add_radiobutton(label="Aygıtı Engelle", variable=self.var_floppy, value=3,
                                         command=lambda: set_class_guid_policy(GUID_FLOPPY, 3))
-        self.menu_options.add_cascade(label="Floppy Aygıtları", menu=self.sub_floppy)
+        self.menu_options.add_cascade(label="Floppy Aygıtları", image=self._menu_icons["floppy"], compound="left", menu=self.sub_floppy)
 
         # Cascade: Tape Aygıtları
         self.sub_tape = tk.Menu(self.menu_options, tearoff=0)
@@ -1184,7 +1317,7 @@ class USBSentryApp:
                                       command=lambda: set_class_guid_policy(GUID_TAPE, 2))
         self.sub_tape.add_radiobutton(label="Aygıtı Engelle", variable=self.var_tape, value=3,
                                       command=lambda: set_class_guid_policy(GUID_TAPE, 3))
-        self.menu_options.add_cascade(label="Tape Aygıtları", menu=self.sub_tape)
+        self.menu_options.add_cascade(label="Tape Aygıtları", image=self._menu_icons["tape"], compound="left", menu=self.sub_tape)
 
         # Cascade: WPD Aygıtları (Telefon/MTP)
         self.sub_wpd = tk.Menu(self.menu_options, tearoff=0)
@@ -1192,7 +1325,7 @@ class USBSentryApp:
                                      command=lambda: set_class_guid_policy(GUID_WPD, 1))
         self.sub_wpd.add_radiobutton(label="Engelle", variable=self.var_wpd, value=3,
                                      command=lambda: set_class_guid_policy(GUID_WPD, 3))
-        self.menu_options.add_cascade(label="WPD Aygıtları (Telefon/MTP)", menu=self.sub_wpd)
+        self.menu_options.add_cascade(label="WPD Aygıtları (Telefon/MTP)", image=self._menu_icons["phone"], compound="left", menu=self.sub_wpd)
 
         self.menu_options.add_separator()
 
