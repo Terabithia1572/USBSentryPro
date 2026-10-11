@@ -1,0 +1,30 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller / Build Artifacts
+build/
+dist/
+Output/
+*.manifest
+
+# Temporary & stage generation files
+usb_sentry_final.py
+prep_stages.py
+usb_sentry_stage2.py
+usb_sentry_stage3.py
+
+# Downloaded CLI binaries & temporary archives
+gh.exe
+*.zip
+
+# Local user configuration & runtime data
+.usbsentrypro/
+*.log
+
+# Environments
+.env
+.venv
+env/
+venv/
