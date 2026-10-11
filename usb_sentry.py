@@ -80,7 +80,73 @@ except Exception:
     pass
 
 # ==============================================================================
-# 3. Persistent Config (Deferred to Auth Phase)
+# 3. Persistent Configuration Management (~/.usbsentrypro/config.json)
+# ==============================================================================
+def get_config_path() -> str:
+    """
+    Returns path to ~/.usbsentrypro/config.json.
+    Ensures directory exists and is 100% consistent across standard and elevated runs.
+    """
+    user_home = os.path.expanduser("~")
+    target_dir = os.path.join(user_home, ".usbsentrypro")
+    os.makedirs(target_dir, exist_ok=True)
+    config_file = os.path.join(target_dir, "config.json")
+
+    # Migrate from older config files if present
+    if not os.path.exists(config_file):
+        for candidate in [
+            os.path.join(os.environ.get("APPDATA", ""), "USBSentryPro", "sentry_config.json"),
+            os.path.join(os.environ.get("APPDATA", ""), "USBSentryPro", "config.json"),
+            os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "app_config.json")
+        ]:
+            if os.path.exists(candidate):
+                try:
+                    with open(candidate, "r", encoding="utf-8") as f:
+                        data = f.read()
+                    with open(config_file, "w", encoding="utf-8") as f:
+                        f.write(data)
+                    break
+                except Exception:
+                    pass
+
+    return config_file
+
+def load_config() -> dict:
+    path = get_config_path()
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+                if "lock_enabled" in cfg and "lock_active" not in cfg:
+                    cfg["lock_active"] = cfg["lock_enabled"]
+                return cfg
+        except Exception:
+            pass
+    return {
+        "lock_active": False,
+        "password_hash": "",
+        "password_salt": "",
+        "block_install_enabled": False,
+        "anti_tamper_enabled": False
+    }
+
+def save_config(cfg_dict: dict):
+    path = get_config_path()
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(cfg_dict, f, indent=4)
+    except Exception as e:
+        print(f"save_config error: {e}")
+
+def hash_password(password: str, salt: str) -> str:
+    return hashlib.sha256((salt + password).encode("utf-8")).hexdigest()
+
+def verify_password(entered: str, salt: str, expected_hash: str) -> bool:
+    if not expected_hash:
+        return True
+    return hash_password(entered, salt) == expected_hash
+
+# ==============================================================================
 # 4. Menu Icons (Deferred to UI Phase)
 # 5. Low-Level Registry Helper Functions
 # ==============================================================================
@@ -871,7 +937,7 @@ class USBSentryApp:
         self.root.protocol("WM_DELETE_WINDOW", self.on_close_window)
 
         # Load Persistent Configuration
-        self.config = {}
+        self.config = load_config()
 
         # State Variables
         self.mode_var = tk.IntVar(value=get_current_mode())
